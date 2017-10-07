@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{9E176CE6-445C-C1B7-C802-F78DD8040A14}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "OpenJam2017",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
