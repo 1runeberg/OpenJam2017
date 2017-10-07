@@ -22,13 +22,29 @@ void AATarget::BeginPlay()
 		OuterShellComponent = NewObject<UStaticMeshComponent>(this);
 		OuterShellComponent->RegisterComponentWithWorld(GetWorld());
 		OuterShellComponent->SetMobility(EComponentMobility::Movable);
-		OuterShellComponent->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
+		OuterShellComponent->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		OuterShellComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		OuterShellComponent->SetStaticMesh(OuterShell);
 
 		if (OuterShellMaterial->IsValidLowLevel())
 		{
 			OuterShellComponent->SetMaterial(0, OuterShellMaterial);
+		}
+	}
+
+	// Create Actor's inner shell
+	if (InnerShell->IsValidLowLevel())
+	{
+		InnerShellComponent = NewObject<UStaticMeshComponent>(this);
+		InnerShellComponent->RegisterComponentWithWorld(GetWorld());
+		InnerShellComponent->SetMobility(EComponentMobility::Movable);
+		InnerShellComponent->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		InnerShellComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		InnerShellComponent->SetStaticMesh(InnerShell);
+
+		if (InnerShellMaterial->IsValidLowLevel())
+		{
+			InnerShellComponent->SetMaterial(0, InnerShellMaterial);
 		}
 	}
 }
