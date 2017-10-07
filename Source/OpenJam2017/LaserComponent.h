@@ -42,4 +42,16 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
 	TArray<FLaser> LaserBeams;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
+	FVector LaserScaleFactor = FVector(0.1,0.f,0.f);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
+	float Range = 1000.f;
+
+	UFUNCTION(BlueprintCallable, Category = "VR")
+	void FireLasers();
+
+private:
+	bool bIsScaling = false;
 };

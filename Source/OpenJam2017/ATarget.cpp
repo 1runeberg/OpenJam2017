@@ -19,6 +19,7 @@ void AATarget::BeginPlay()
 	// Create Actor's outer shell
 	if (OuterShell->IsValidLowLevel())
 	{
+		// Set up static mesh component
 		OuterShellComponent = NewObject<UStaticMeshComponent>(this);
 		OuterShellComponent->RegisterComponentWithWorld(GetWorld());
 		OuterShellComponent->SetMobility(EComponentMobility::Movable);
@@ -26,15 +27,21 @@ void AATarget::BeginPlay()
 		OuterShellComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		OuterShellComponent->SetStaticMesh(OuterShell);
 
+		// Set the material of the component
 		if (OuterShellMaterial->IsValidLowLevel())
 		{
 			OuterShellComponent->SetMaterial(0, OuterShellMaterial);
 		}
+
+		// Apply scale
+		OuterShellComponent->SetWorldScale3D(OuterShellScale);
+
 	}
 
 	// Create Actor's inner shell
 	if (InnerShell->IsValidLowLevel())
 	{
+		// Setup static mesh component
 		InnerShellComponent = NewObject<UStaticMeshComponent>(this);
 		InnerShellComponent->RegisterComponentWithWorld(GetWorld());
 		InnerShellComponent->SetMobility(EComponentMobility::Movable);
@@ -42,10 +49,14 @@ void AATarget::BeginPlay()
 		InnerShellComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		InnerShellComponent->SetStaticMesh(InnerShell);
 
+		// Set material 
 		if (InnerShellMaterial->IsValidLowLevel())
 		{
 			InnerShellComponent->SetMaterial(0, InnerShellMaterial);
 		}
+
+		// Apply scale
+		OuterShellComponent->SetWorldScale3D(OuterShellScale);
 	}
 }
 

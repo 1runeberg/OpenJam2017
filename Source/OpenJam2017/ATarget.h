@@ -35,6 +35,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
 	UMaterialInterface* InnerShellMaterial;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
+	FVector OuterShellScale = FVector(1.f, 1.f ,1.f);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
+	FVector InnerShellScale = FVector(1.f, 1.f, 1.f);
 private:
 	UStaticMeshComponent* OuterShellComponent;
 	UStaticMeshComponent* InnerShellComponent;

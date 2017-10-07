@@ -1,6 +1,7 @@
 // Copyright 2017 runeberg.io under the MIT OpenSource License Terms
 
 #include "LaserComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 // Sets default values for this component's properties
@@ -10,7 +11,6 @@ ULaserComponent::ULaserComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
 }
 
 
@@ -51,6 +51,56 @@ void ULaserComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// Scale lasers
+	if (bIsScaling)
+	{
+		for (int32 i = 0; i < LaserBeams.Num(); i++)
+		{
+			if (LaserBeams[i].LaserMeshComponent->IsValidLowLevel())
+			{
+				// Scale mesh
+				LaserBeams[i].LaserMeshComponent->SetWorldScale3D(FVector(LaserBeams[i].LaserMeshComponent->GetComponentScale().X + LaserScaleFactor.X,
+					LaserBeams[i].LaserMeshComponent->GetComponentScale().Y + LaserScaleFactor.Y,
+					LaserBeams[i].LaserMeshComponent->GetComponentScale().Z + LaserScaleFactor.Z)
+				);
+			}
+
+		}
+
+		// Check if we've reached the max distance, based on range
+		if (LaserBeams.Num() > 0 
+			&& LaserBeams[LaserBeams.Num()-1].LaserMeshComponent->IsValidLowLevel()
+			&& LaserBeams[LaserBeams.Num()-1].LaserMeshComponent->GetComponentScale().X > Range
+			)
+		{
+			//bIsScaling = false;
+		}
+	}
 }
 
+
+// Fire all lasers
+void ULaserComponent::FireLasers()
+{
+	// Face lasers to target location
+	for (int32 i = 0; i < LaserBeams.Num(); i++)
+	{
+		if (LaserBeams[i].LaserMeshComponent->IsValidLowLevel())
+		{
+			// Calculate the target location
+			FVector TargetLocation = this->GetComponentLocation() + (this->GetComponentRotation().Vector() * Range);
+
+			// Find the laser rotation 
+			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(LaserBeams[i].LaserMeshComponent->GetComponentLocation(), TargetLocation);
+
+			// Set the rotation of the laser to face the target location
+			LaserBeams[i].LaserMeshComponent->SetWorldRotation(TargetRotation);
+
+
+		}
+
+	}
+
+	// Allow scaling of lasers
+	bIsScaling = true;
+}

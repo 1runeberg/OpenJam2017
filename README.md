@@ -22,12 +22,15 @@ Gaze shooting, one hand near the headset "marks" a target and when both hands ar
 
 a. Create an actor that will act as a target
     - Expose scale
-    
+
 b. Enable gaze component in the project
-    - Expose SMC for BP
+    - Expose SMC for BP - done
 
 c. Laser mechanic
-    - Auto rotation of laser to middle of camera target
+    - Auto rotation of laser to middle of camera target -done
+    - Auto scaling to target -done
+    - Make property for laser range -done
+    - Make timer delay after laser scale
 
 d. Life marker/indicator
 e. Level blocking / Use splines for the path of the target "waves"
