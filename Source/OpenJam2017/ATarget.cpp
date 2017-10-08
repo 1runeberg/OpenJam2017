@@ -2,7 +2,6 @@
 
 #include "ATarget.h"
 
-
 // Sets default values
 AATarget::AATarget()
 {
@@ -16,9 +15,29 @@ void AATarget::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	ApplyTargetVars();
+}
+
+// Called every frame
+void AATarget::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+/** Apply target variables for when called from an external class */
+void AATarget::ApplyTargetVars()
+{
 	// Create Actor's outer shell
 	if (OuterShell->IsValidLowLevel())
 	{
+		// Set up sphere collision component
+		SphereCollision = NewObject<USphereComponent>(this);
+		SphereCollision->RegisterComponentWithWorld(GetWorld());
+		SphereCollision->SetMobility(EComponentMobility::Movable);
+		SphereCollision->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
 		// Set up static mesh component
 		OuterShellComponent = NewObject<UStaticMeshComponent>(this);
 		OuterShellComponent->RegisterComponentWithWorld(GetWorld());
@@ -35,6 +54,7 @@ void AATarget::BeginPlay()
 
 		// Apply scale
 		OuterShellComponent->SetWorldScale3D(OuterShellScale);
+		SphereCollision->SetWorldScale3D(OuterShellScale);
 
 	}
 
@@ -57,13 +77,7 @@ void AATarget::BeginPlay()
 
 		// Apply scale
 		OuterShellComponent->SetWorldScale3D(OuterShellScale);
+
 	}
-}
-
-// Called every frame
-void AATarget::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 

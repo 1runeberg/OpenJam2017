@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/SphereComponent.h"
 #include "ATarget.generated.h"
 
 UCLASS()
@@ -40,7 +41,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
 	FVector InnerShellScale = FVector(1.f, 1.f, 1.f);
-private:
+
+	/** Apply target variables for when called from an external class */
+	void ApplyTargetVars();
+
+	USphereComponent* SphereCollision;
 	UStaticMeshComponent* OuterShellComponent;
 	UStaticMeshComponent* InnerShellComponent;
 };

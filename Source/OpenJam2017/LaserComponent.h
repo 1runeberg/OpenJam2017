@@ -47,6 +47,9 @@ public:
 	FVector LaserScaleFactor = FVector(0.1,0.f,0.f);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
+	FVector LaserShrinkFactor = FVector(0.5, 0.f, 0.f);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
 	float Range = 1000.f;
 
 	UFUNCTION(BlueprintCallable, Category = "VR")
@@ -54,4 +57,7 @@ public:
 
 private:
 	bool bIsScaling = false;
+	bool bIsShrinking = false;
+
+	void DestroyThis();
 };

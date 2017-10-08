@@ -21,18 +21,26 @@ Gaze shooting, one hand near the headset "marks" a target and when both hands ar
 3. TODO:
 
 a. Create an actor that will act as a target
-    - Expose scale
+    - Expose scale - done
 
 b. Enable gaze component in the project
     - Expose SMC for BP - done
 
 c. Laser mechanic
-    - Auto rotation of laser to middle of camera target -done
-    - Auto scaling to target -done
-    - Make property for laser range -done
-    - Make timer delay after laser scale
+    - Auto rotation of laser to middle of camera target - done
+    - Auto scaling to target - done
+    - Make property for laser range - done
+    - Make timer delay after laser scale - done (used scaling speed instead)
+    - Line trace for lasers and destroy targets - done
 
-d. Life marker/indicator
+d. Life marker/indicator - done
 e. Level blocking / Use splines for the path of the target "waves"
 f. Coding / troubleshooting / polishing
 g. Dressing up
+
+
+Polish:
+
+1. Laser scale at end is a bit off
+2. Check in-editor warning for Gaze Broadcast Hit
+3. Remove tick for C++ classes that dont need it

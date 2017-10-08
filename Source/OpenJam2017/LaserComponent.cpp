@@ -2,7 +2,7 @@
 
 #include "LaserComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-
+#include "ATarget.h"
 
 // Sets default values for this component's properties
 ULaserComponent::ULaserComponent()
@@ -63,6 +63,37 @@ void ULaserComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 					LaserBeams[i].LaserMeshComponent->GetComponentScale().Y + LaserScaleFactor.Y,
 					LaserBeams[i].LaserMeshComponent->GetComponentScale().Z + LaserScaleFactor.Z)
 				);
+
+				// Line trace
+				FVector TargetLocation = LaserBeams[i].LaserMeshComponent->GetComponentLocation() +
+					(LaserBeams[i].LaserMeshComponent->GetComponentRotation().Vector() * LaserBeams[i].LaserMeshComponent->GetComponentScale().X);
+
+				FHitResult TestHit;
+				FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
+				bool bHit = GetWorld()->LineTraceSingleByObjectType(
+					TestHit,
+					LaserBeams[i].LaserMeshComponent->GetComponentLocation(),
+					TargetLocation,
+					FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldDynamic),
+					TraceParameters
+					);
+
+				// DEBUG: Test what we hit
+				//if (bHit && TestHit.GetActor()->IsValidLowLevel())
+				//{
+				//	UE_LOG(LogTemp, Warning, TEXT("Actor hit is %s"), *TestHit.GetActor()->GetName());
+				//}
+
+				// Check if we hit something and that it is a valid target
+				if (bHit && TestHit.GetActor()->IsValidLowLevel() && TestHit.GetActor()->IsA<AATarget>())
+				{
+					// If it is, then destroy the target
+					TestHit.GetActor()->Destroy();
+
+					// Then destroy this component and all its' children
+					DestroyThis();
+				}
+
 			}
 
 		}
@@ -73,7 +104,40 @@ void ULaserComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 			&& LaserBeams[LaserBeams.Num()-1].LaserMeshComponent->GetComponentScale().X > Range
 			)
 		{
-			//bIsScaling = false;
+			// Stop laser from scaling
+			bIsScaling = false;
+
+			// Make laser shrink
+			bIsShrinking = true;
+		}
+	}
+	else if (bIsShrinking)
+	{
+		// Move the component forward x units
+		SetWorldLocation(GetComponentLocation() + LaserShrinkFactor);
+
+		// Reduce laser beams' scale by x units
+		for (int32 i = 0; i < LaserBeams.Num(); i++)
+		{
+			if (LaserBeams[i].LaserMeshComponent->IsValidLowLevel())
+			{
+				// Scale mesh
+				LaserBeams[i].LaserMeshComponent->SetWorldScale3D(LaserBeams[i].LaserMeshComponent->GetComponentScale()-LaserShrinkFactor);
+			}
+
+		}
+
+		// Check if we've reached 0 scale, destroy this component
+		if (LaserBeams.Num() > 0
+			&& LaserBeams[LaserBeams.Num() - 1].LaserMeshComponent->IsValidLowLevel()
+			&& LaserBeams[LaserBeams.Num() - 1].LaserMeshComponent->GetComponentScale().X < 0.1)
+		{
+			// Disable all tick activities
+			bIsScaling = false;
+			bIsShrinking = false;
+
+			DestroyThis();
+
 		}
 	}
 }
@@ -103,4 +167,27 @@ void ULaserComponent::FireLasers()
 
 	// Allow scaling of lasers
 	bIsScaling = true;
+}
+
+// Destroy this component and all its associated children components
+void ULaserComponent::DestroyThis() 
+{
+	// Get all children components and destroy them
+	TArray<USceneComponent*> Children;
+	GetChildrenComponents(true, Children);
+
+	// Destroy all children to ensure we don't get orphaned objects in the world
+	for (int32 i = 0; i < Children.Num(); i++)
+	{
+		if (Children[i]->IsValidLowLevel())
+		{
+			Children[i]->DestroyComponent(false);
+		}
+	}
+
+	// Destroy itself
+	if (this->IsValidLowLevel())
+	{
+		this->DestroyComponent();
+	}
 }
