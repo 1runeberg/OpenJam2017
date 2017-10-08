@@ -18,36 +18,17 @@ Get hit x number of times
 2. Shooting Mechanic:
 Gaze shooting, one hand near the headset "marks" a target and when both hands are near the headset we fire four laser beams on the corners of the VR camera.
 
-3. TODO:
+3. Tools used:
+- Unreal Engine 4
+- Runeberg VR Plugin 
+- OBS - For livestreaming of all coding sessions
+- Reaper
+- Gimp
+- Blender
+- Audacity
 
-a. Create an actor that will act as a target
-    - Expose scale - done
+4. Attributions:
 
-b. Enable gaze component in the project
-    - Expose SMC for BP - done
-
-c. Laser mechanic
-    - Auto rotation of laser to middle of camera target - done
-    - Auto scaling to target - done
-    - Make property for laser range - done
-    - Make timer delay after laser scale - done (used scaling speed instead)
-    - Line trace for lasers and destroy targets - done
-
-d. Life marker/indicator - done
-e. Level blocking / Use splines for the path of the target "waves"
-f. Coding / troubleshooting / polishing
-g. Dressing up
-
-
-Polish:
-
-1. Laser scale at end is a bit off
-2. Check in-editor warning for Gaze Broadcast Hit
-3. Remove tick for C++ classes that dont need it
-4. Dynamic shadows for targets (disable)
-5. Rejig ATarget to be a SM Actor
-
-Attribution:
 Music:
 Alan Walker, The Spectre (released copyright free)
 
@@ -64,3 +45,14 @@ https://freesound.org/people/Mativve/sounds/391539/
 
 Lose sound:
 https://freesound.org/people/josepharaoh99/sounds/364929/
+
+
+5. Polish/Still left to do/known issues:
+
+1. Laser scale at end is a bit off
+2. Check in-editor warning for Gaze Broadcast Hit
+3. Remove tick for C++ classes that dont need it
+4. Dynamic shadows for targets (disable)
+5. Rejig ATarget to be a SM Actor
+
+
