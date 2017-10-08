@@ -37,6 +37,9 @@ public:
 	UMaterialInterface* InnerShellMaterial;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
+	USoundBase* SoundFX;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
 	FVector OuterShellScale = FVector(1.f, 1.f ,1.f);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
@@ -51,4 +54,6 @@ public:
 	USphereComponent* SphereCollision;
 	UStaticMeshComponent* OuterShellComponent;
 	UStaticMeshComponent* InnerShellComponent;
+	UAudioComponent* AudioComponent;
+
 };

@@ -1,6 +1,7 @@
 // Copyright 2017 runeberg.io under the MIT OpenSource License Terms
 
 #include "ATarget.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AATarget::AATarget()
@@ -23,10 +24,11 @@ void AATarget::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (SphereCollision->IsValidLowLevel() && OuterShellComponent->IsValidLowLevel())
+	if (SphereCollision->IsValidLowLevel() && OuterShellComponent->IsValidLowLevel() && AudioComponent->IsValidLowLevel())
 	{
 		SphereCollision->AddWorldOffset(GravityVelocity);
 		OuterShellComponent->AddWorldOffset(GravityVelocity);
+		AudioComponent->AddWorldOffset(GravityVelocity);
 	}
 }
 
@@ -50,6 +52,17 @@ void AATarget::ApplyTargetVars()
 		OuterShellComponent->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		OuterShellComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		OuterShellComponent->SetStaticMesh(OuterShell);
+
+		// Set up sound component
+		AudioComponent = NewObject<UAudioComponent>(this);
+		AudioComponent->RegisterComponentWithWorld(GetWorld());
+		AudioComponent->SetMobility(EComponentMobility::Movable);
+		AudioComponent->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		if (SoundFX->IsValidLowLevel())
+		{
+			AudioComponent->SetSound(SoundFX);
+			//AudioComponent->SetVolumeMultiplier(1000.f);
+		}
 
 		// Set the material of the component
 		if (OuterShellMaterial->IsValidLowLevel())
@@ -85,4 +98,3 @@ void AATarget::ApplyTargetVars()
 
 	}
 }
-

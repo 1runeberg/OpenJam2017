@@ -2,7 +2,8 @@
 
 #include "LaserComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "ATarget.h"
+#include "Components/AudioComponent.h"
+
 
 // Sets default values for this component's properties
 ULaserComponent::ULaserComponent()
@@ -65,11 +66,22 @@ void ULaserComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 				// Check if we hit something and that it is a valid target
 				if (bHit && TestHit.GetActor()->IsValidLowLevel() && TestHit.GetActor()->IsA<AATarget>())
 				{
-					// If it is, then destroy the target
-					TestHit.GetActor()->Destroy();
+					AATarget* TestTarget = Cast<AATarget>(TestHit.GetActor());
+
+					if (TestTarget)
+					{
+						TestTarget->AudioComponent->Play();
+						//UE_LOG(LogTemp, Warning, TEXT("KABOOM! Sound is %s"), *TestTarget->AudioComponent->Sound->GetName());
+
+						// If it is, then destroy the target
+						HitTarget = TestTarget;
+					}
+
+
 
 					// Then destroy this component and all its' children
-					DestroyThis();
+					FTimerHandle UnusedHandle;
+					GetWorld()->GetTimerManager().SetTimer(UnusedHandle, this, &ULaserComponent::DestroyThis, .5f, false);
 				}
 
 			}
@@ -82,6 +94,8 @@ void ULaserComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 			&& LaserBeams[LaserBeams.Num()-1].LaserMeshComponent->GetComponentScale().X > Range
 			)
 		{
+			//UE_LOG(LogTemp, Warning, TEXT("SHRINK!"));
+
 			// Stop laser from scaling
 			bIsScaling = false;
 
@@ -92,14 +106,23 @@ void ULaserComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	else if (bIsShrinking)
 	{
 		// Move the component forward x units
-		OriginalLocation += LaserShrinkFactor;
-		SetWorldLocation(OriginalLocation);
+		//OriginalLocation += LaserShrinkFactor;
+		this->AddWorldOffset(FVector(8.f, -.08f, 0.0f));
+
 
 		// Reduce laser beams' scale by x units
 		for (int32 i = 0; i < LaserBeams.Num(); i++)
 		{
 			if (LaserBeams[i].LaserMeshComponent->IsValidLowLevel())
 			{
+				//LaserBeams[i].LaserMeshComponent->AddWorldOffset(FVector(.1f,0.f,0.0f));
+
+				//UE_LOG(LogTemp, Warning, TEXT("Shrink factor is %s"), *LaserShrinkFactor.ToString());
+
+				// Set Beam rotation
+				FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(LaserBeams[i].LaserMeshComponent->GetComponentLocation(), OriginalLocation);
+				LaserBeams[i].LaserMeshComponent->SetWorldRotation(TargetRotation);
+
 				// Scale mesh
 				LaserBeams[i].LaserMeshComponent->SetWorldScale3D(LaserBeams[i].LaserMeshComponent->GetComponentScale()-LaserShrinkFactor);
 			}
@@ -109,7 +132,7 @@ void ULaserComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 		// Check if we've reached 0 scale, destroy this component
 		if (LaserBeams.Num() > 0
 			&& LaserBeams[LaserBeams.Num() - 1].LaserMeshComponent->IsValidLowLevel()
-			&& LaserBeams[LaserBeams.Num() - 1].LaserMeshComponent->GetComponentScale().X < 0.1)
+			&& LaserBeams[LaserBeams.Num() - 1].LaserMeshComponent->GetComponentScale().X < .5f)
 		{
 			// Disable all tick activities
 			bIsScaling = false;
@@ -125,16 +148,17 @@ void ULaserComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 // Fire all lasers
 void ULaserComponent::FireLasers()
 {
+	// Calculate the target location
+	FVector TargetLocation = this->GetComponentLocation() + (this->GetComponentRotation().Vector() * Range);
+
 	// Save the original location of this component
-	OriginalLocation = this->GetComponentLocation();
+	OriginalLocation = TargetLocation;
 
 	// Face lasers to target location
 	for (int32 i = 0; i < LaserBeams.Num(); i++)
 	{
 		if (LaserBeams[i].LaserMeshComponent->IsValidLowLevel())
 		{
-			// Calculate the target location
-			FVector TargetLocation = this->GetComponentLocation() + (this->GetComponentRotation().Vector() * Range);
 
 			// Find the laser rotation 
 			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(LaserBeams[i].LaserMeshComponent->GetComponentLocation(), TargetLocation);
@@ -154,6 +178,12 @@ void ULaserComponent::FireLasers()
 // Destroy this component and all its associated children components
 void ULaserComponent::DestroyThis() 
 {
+	// Play sound
+	if (HitTarget->IsValidLowLevel())
+	{
+		HitTarget->Destroy();
+	}
+
 	// Get all children components and destroy them
 	TArray<USceneComponent*> Children;
 	GetChildrenComponents(true, Children);

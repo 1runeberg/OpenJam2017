@@ -47,6 +47,7 @@ void ATargetGenerator::SpawnTarget()
 		NewTarget->InnerShellMaterial = TargetVars.InnerShellMaterial;
 		NewTarget->OuterShellScale = TargetVars.OuterShellScale;
 		NewTarget->InnerShellScale = TargetVars.InnerShellScale;
+		NewTarget->SoundFX = TargetVars.SoundFX;
 
 		// Apply target vars
 		NewTarget->ApplyTargetVars();

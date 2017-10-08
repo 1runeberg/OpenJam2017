@@ -18,6 +18,9 @@ struct FTargetVars
 	UStaticMesh* InnerShell;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
+	USoundBase* SoundFX;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
 	UMaterialInterface* OuterShellMaterial;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")

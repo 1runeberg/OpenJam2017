@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
+#include "ATarget.h"
 #include "LaserComponent.generated.h"
 
 USTRUCT(BlueprintType)
@@ -61,6 +62,7 @@ public:
 private:
 	bool bIsScaling = false;
 	bool bIsShrinking = false;
+	AATarget* HitTarget;
 
 	FVector OriginalLocation = FVector::ZeroVector;
 	void DestroyThis();
