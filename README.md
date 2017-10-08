@@ -1,24 +1,22 @@
 # OpenJam2017
 
-A simple VR wave shooter for the OpenJam 2017. Theme is "Leave a Mark".
+A simple VR shooter for the OpenJam 2017. Theme is "Leave a Mark". 
+Works on both Oculus Rift & the Vive-
 
-Made to test livestream and livecoding using hte Opensource RunebergVR plugin and the "open code" UE4 engine.
+Made to test livestream and livecoding using the Opensource RunebergVR plugin and the "open code" UE4 engine.
 
-In this series I will try to use mostly open source tools & assets or create one from scratch. This is nto meant to be a sphisticated game but is meant for "open" education purposes.
+In this series I will try to use mostly open source tools & assets or create one from scratch. This is not meant to be a sophisticated game but is meant for "open" education purposes.
 
 1. Goal:
-Shoot waves of targets which could either be benign or dangerous, player needs to "mark" them first via a continous gaze to see what's inside them and then destroying ones that are dangerous via a four laser beam sequence.
+Shoot falling icospheres/targets using your laser eyes (ala Cyclops of the X-Men), use the trigger of either motion controller to fire a four beam laser to targets. Do this to prevent the icospheres from touching the Octa "Mark" (Octagonal cloud below you) which shrinks each time an icosphere hits it.
 
-Win condition: 
-Stay alive until the end of song "The Spectre" (3:26) from ALan Walker which was made "copyright free" recently.
+Survive until the end of the song "The Spectre" by Alan Walker (released copyright free) making sure you leave at least a portion of the Octa "Mark". If the entire mark is destroyed before the song ends, you lose the game.
 
-Lose condition:
-Get hit x number of times
+Game will automatically restart in its current iteration after 3 seconds after you win or lose.
 
-2. Shooting Mechanic:
-Gaze shooting, one hand near the headset "marks" a target and when both hands are near the headset we fire four laser beams on the corners of the VR camera.
+Have fun, challenge yourself to leave as big a mark as possible!
 
-3. Tools used:
+2. Tools used:
 - Unreal Engine 4
 - Runeberg VR Plugin 
 - OBS - For livestreaming of all coding sessions
@@ -27,7 +25,7 @@ Gaze shooting, one hand near the headset "marks" a target and when both hands ar
 - Blender
 - Audacity
 
-4. Attributions:
+3. Attributions:
 
 Music:
 Alan Walker, The Spectre (released copyright free)
@@ -47,12 +45,10 @@ Lose sound:
 https://freesound.org/people/josepharaoh99/sounds/364929/
 
 
-5. Polish/Still left to do/known issues:
+4. Polish/Still left to do/known issues:
 
 1. Laser scale at end is a bit off
 2. Check in-editor warning for Gaze Broadcast Hit
 3. Remove tick for C++ classes that dont need it
 4. Dynamic shadows for targets (disable)
 5. Rejig ATarget to be a SM Actor
-
-
