@@ -23,6 +23,11 @@ void AATarget::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (SphereCollision->IsValidLowLevel() && OuterShellComponent->IsValidLowLevel())
+	{
+		SphereCollision->AddWorldOffset(GravityVelocity);
+		OuterShellComponent->AddWorldOffset(GravityVelocity);
+	}
 }
 
 /** Apply target variables for when called from an external class */

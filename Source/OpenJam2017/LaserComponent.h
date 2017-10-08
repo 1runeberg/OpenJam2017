@@ -55,9 +55,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "VR")
 	void FireLasers();
 
+	UFUNCTION(BlueprintCallable, Category = "VR")
+	void GenerateLasers();
+
 private:
 	bool bIsScaling = false;
 	bool bIsShrinking = false;
 
+	FVector OriginalLocation = FVector::ZeroVector;
 	void DestroyThis();
 };

@@ -42,6 +42,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
 	FVector InnerShellScale = FVector(1.f, 1.f, 1.f);
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "VR")
+	FVector GravityVelocity = FVector(0.f, 0.f, -1.f);
+
 	/** Apply target variables for when called from an external class */
 	void ApplyTargetVars();
 

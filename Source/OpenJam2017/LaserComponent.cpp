@@ -19,29 +19,7 @@ void ULaserComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Iterate through all laser beams and set custom properties
-	for (int32 i = 0; i < LaserBeams.Num(); i++)
-	{
-		if (LaserBeams[i].LaserMesh->IsValidLowLevel())
-		{
-			// Create StaticMesh Component
-			LaserBeams[i].LaserMeshComponent = NewObject<UStaticMeshComponent>(this);
-			LaserBeams[i].LaserMeshComponent->RegisterComponentWithWorld(GetWorld());
-			LaserBeams[i].LaserMeshComponent->SetMobility(EComponentMobility::Movable);
-			LaserBeams[i].LaserMeshComponent->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
-			LaserBeams[i].LaserMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			LaserBeams[i].LaserMeshComponent->SetStaticMesh(LaserBeams[i].LaserMesh);
-
-			// Set the laser material if available
-			if (LaserBeams[i].LaserMaterial->IsValidLowLevel())
-			{
-				LaserBeams[i].LaserMeshComponent->SetMaterial(0, LaserBeams[i].LaserMaterial);
-			}
-			
-			// Set transform offsets
-			LaserBeams[i].LaserMeshComponent->AddLocalTransform(LaserBeams[i].TransformOffset);
-		}
-	}
+	GenerateLasers();
 	
 }
 
@@ -114,7 +92,8 @@ void ULaserComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	else if (bIsShrinking)
 	{
 		// Move the component forward x units
-		SetWorldLocation(GetComponentLocation() + LaserShrinkFactor);
+		OriginalLocation += LaserShrinkFactor;
+		SetWorldLocation(OriginalLocation);
 
 		// Reduce laser beams' scale by x units
 		for (int32 i = 0; i < LaserBeams.Num(); i++)
@@ -146,6 +125,9 @@ void ULaserComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 // Fire all lasers
 void ULaserComponent::FireLasers()
 {
+	// Save the original location of this component
+	OriginalLocation = this->GetComponentLocation();
+
 	// Face lasers to target location
 	for (int32 i = 0; i < LaserBeams.Num(); i++)
 	{
@@ -189,5 +171,33 @@ void ULaserComponent::DestroyThis()
 	if (this->IsValidLowLevel())
 	{
 		this->DestroyComponent();
+	}
+}
+
+
+// Iterate through all laser beams and set custom properties
+void ULaserComponent::GenerateLasers()
+{
+	for (int32 i = 0; i < LaserBeams.Num(); i++)
+	{
+		if (LaserBeams[i].LaserMesh->IsValidLowLevel())
+		{
+			// Create StaticMesh Component
+			LaserBeams[i].LaserMeshComponent = NewObject<UStaticMeshComponent>(this);
+			LaserBeams[i].LaserMeshComponent->RegisterComponentWithWorld(GetWorld());
+			LaserBeams[i].LaserMeshComponent->SetMobility(EComponentMobility::Movable);
+			LaserBeams[i].LaserMeshComponent->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
+			LaserBeams[i].LaserMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			LaserBeams[i].LaserMeshComponent->SetStaticMesh(LaserBeams[i].LaserMesh);
+
+			// Set the laser material if available
+			if (LaserBeams[i].LaserMaterial->IsValidLowLevel())
+			{
+				LaserBeams[i].LaserMeshComponent->SetMaterial(0, LaserBeams[i].LaserMaterial);
+			}
+
+			// Set transform offsets
+			LaserBeams[i].LaserMeshComponent->AddLocalTransform(LaserBeams[i].TransformOffset);
+		}
 	}
 }
